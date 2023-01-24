@@ -93,7 +93,7 @@ def sendEmail(to, content):
     server.starttls()
 
     # Enable low security in gmail
-    server.login('aayush.salian@somaiya.edu', 'LoneWolf97407')
+    server.login('aayush.salian@somaiya.edu', '')
     server.sendmail('aayush.salian@somaiya.edu', to, content)
     server.close()
 
