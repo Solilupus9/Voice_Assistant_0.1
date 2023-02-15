@@ -46,7 +46,7 @@ def wishMe():
     else:
         speak("Good Evening Sir !")
 
-    assname = ("Jarvis 1 point o")
+    assname = ("Jivi 1 point o")
     speak("I am your Assistant")
     speak(assname)
 
@@ -144,8 +144,8 @@ def main():
             print(songs)
             random = os.startfile(os.path.join(music_dir, songs[1]))
 
-        elif 'the time' in query:
-            strTime = datetime.datetime.now().strftime("% H:% M:% S")
+        elif 'time' in query:
+            strTime = datetime.datetime.now().strftime('%H:%M:%S')
             speak(f"Sir, the time is {strTime}")
 
         elif 'open opera' in query:
@@ -208,7 +208,7 @@ def main():
 
         elif "calculate" in query:
 
-            app_id = "Wolframalpha api id"
+            app_id = ""
             client = wolframalpha.Client(app_id)
             indx = query.lower().split().index('calculate')
             query = query.split()[indx + 1:]
