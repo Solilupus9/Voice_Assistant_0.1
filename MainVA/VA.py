@@ -208,7 +208,7 @@ def main():
 
         elif "calculate" in query:
 
-            app_id = ""
+            app_id = "App ID"
             client = wolframalpha.Client(app_id)
             indx = query.lower().split().index('calculate')
             query = query.split()[indx + 1:]
