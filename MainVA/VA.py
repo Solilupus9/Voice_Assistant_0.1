@@ -25,6 +25,7 @@ from bs4 import BeautifulSoup
 import win32com.client as wincl
 from urllib.request import urlopen
 
+
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
@@ -88,13 +89,17 @@ def takeCommand():
 
 
 def sendEmail(to, content):
+
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
 
     # Enable low security in gmail
-    server.login('testingservers273@gmail.com', 'ewrddqgikegerowf')
-    server.sendmail('testingservers273@gmail.com', to, content)
+    file = open('datalog.txt')
+    addpass = file.readlines()
+    server.login(addpass[0],addpass[1])
+    server.sendmail(addpass[0], to, content)
+    file.close()
     server.close()
 
 
