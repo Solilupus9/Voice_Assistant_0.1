@@ -8,13 +8,13 @@ import datetime
 import wikipedia
 import webbrowser
 import os
-import winshell
 import pyjokes
 import smtplib
 import ctypes
 import time
 import shutil
 from urllib.request import urlopen
+from akinator import *
 
 
 engine = pyttsx3.init('sapi5')
@@ -37,21 +37,7 @@ def wishMe():
         speak("Good Evening!")
 
     speak("I am your Voice Assistant")
-
-
-def username():
-    speak("What should I call you sir?")
-    uname = takeCommand()
-    speak("Welcome ")
-    speak(uname)
-    columns = shutil.get_terminal_size().columns
-
-    print("#####################".center(columns))
-    print("Welcome Mr.", uname.center(columns))
-    print("#####################".center(columns))
-
-    speak("How can I help you?")
-
+    time.sleep(0.5)
 
 def takeCommand():
     r = sr.Recognizer()
@@ -89,7 +75,7 @@ def main():
     clear = lambda: os.system('cls')
     clear()
     wishMe()
-    username()
+    speak("Please tell me how I can help you?")
 
     while True:
         query = takeCommand().lower()
@@ -127,8 +113,13 @@ def main():
 
         elif 'email' in query:
             try:
-                speak("What should I say?")
-                content = takeCommand()
+                speak("Please tell me what you wish to write.")
+                speak('Or would you prefer to type it?')
+                query = takeCommand()
+                if 'type' in query:
+                    content=input("Enter email:")
+                else:
+                    content=takeCommand()
                 to = "esmail.s@somaiya.edu"
                 sendEmail(to, content)
                 speak("Email has been sent !")
@@ -136,24 +127,12 @@ def main():
                 print(e)
                 speak("I am not able to send this email")
 
-        # elif 'send a mail' in query:
-        #     try:
-        #         speak("What should I say?")
-        #         content = takeCommand()
-        #         speak("To whom should I send")
-        #         to = input()
-        #         sendEmail(to, content)
-        #         speak("Email has been sent !")
-        #     except Exception as e:
-        #         print(e)
-        #         speak("I am not able to send this email")
-
         elif 'how are you' in query:
             speak("I am fine, Thank you")
             speak("How are you?")
             query=takeCommand()
             if 'fine' in query or "good" in query:
-                speak("That's wonderful!!")
+                speak("That's wonderful!")
 
         elif 'exit' in query:
             speak("Thank you for giving me your time")
@@ -188,22 +167,6 @@ def main():
         #                                                0)
         #     speak("Background changed successfully")
 
-        elif 'news' in query:
-            try:
-                jsonObj=urlopen('''https://newsapi.org/v1/articles?source=the-times-of-india&sortBy=top&apiKey=\\times of India Api key\\''')
-                data = json.load(jsonObj)
-                i = 1
-                speak('here are some top news India')
-                print('''=============== TIMES OF INDIA ============''' + '\n')
-
-                for item in data['articles']:
-                    print(str(i) + '. ' + item['title'] + '\n')
-                    print(item['description'] + '\n')
-                    speak(str(i) + '. ' + item['title'] + '\n')
-                    i += 1
-            except Exception as e:
-                print(str(e))
-
         elif 'lock' in query:
             speak("locking the device")
             ctypes.windll.user32.LockWorkStation()
@@ -219,10 +182,6 @@ def main():
                 print(e)
                 speak('Shutdown failed')
 
-        # elif 'empty recycle bin' in query:
-        #     winshell.recycle_bin().empty(confirm=False, show_progress=False, sound=True)
-        #     speak("Recycle Bin Recycled")
-
         elif "don't listen" in query or "stop listening" in query:
             speak("For how long?")
             a = int(takeCommand())
@@ -237,7 +196,7 @@ def main():
             webbrowser.open("https://www.google.nl/maps/place/"+location)
 
         elif "write a note" in query:
-            speak("What should i write, sir")
+            speak("What should i write, sir?")
             note = takeCommand()
             file = open('note.txt', 'w')
             speak("Should i include date and time?")
@@ -253,30 +212,49 @@ def main():
             print(file.read())
             speak(file.read(6))
 
-        # elif "weather" in query:
-        #
-        #     # Google Open weather website
-        #     # to get API of Open weather
-        #     api_key = "Api key"
-        #     base_url = "https://api.openweathermap.org / data / 2.5 / weather?"
-        #     speak(" City name ")
-        #     print("City name : ")
-        #     city_name = takeCommand()
-        #     complete_url = base_url + "appid =" + api_key + "&q =" + city_name
-        #     response = requests.get(complete_url)
-        #     x = response.json()
-        #
-        #     if x["code"] != "404":
-        #         y = x["main"]
-        #         current_temperature = y["temp"]
-        #         current_pressure = y["pressure"]
-        #         current_humidiy = y["humidity"]
-        #         z = x["weather"]
-        #         weather_description = z[0]["description"]
-        #         print(" Temperature (in kelvin unit) = " + str(
-        #             current_temperature) + "\n atmospheric pressure (in hPa unit) =" + str(
-        #             current_pressure) + "\n humidity (in percentage) = " + str(
-        #             current_humidiy) + "\n description = " + str(weather_description))
-        #
-        #     else:
-        #         speak(" City Not Found ")
+        elif 'chess' in query:
+            webbrowser.open('https://www.chess.com/play/computer')
+
+        elif 'akinator' in query:
+            speak('Playing Akinator')
+            aki=Akinator()
+            q=aki.start_game()
+            speak('First question:')
+            try:
+                while aki.progression<=80:
+                    print(q)
+                    speak(q)
+                    a=takeCommand()
+                    if 'yes' in a:
+                        q=aki.answer('yes')
+                    elif 'no' in a:
+                        q=aki.answer('no')
+                    elif 'dont know' in a:
+                        q=aki.answer('i')
+                    elif 'probably' in a or 'think so' in a:
+                        q=aki.answer('p')
+                    elif 'probably not' in a or 'dont think so' in a:
+                        q=aki.answer('pn')
+                    elif 'back' in a:
+                        try:
+                            speak('Previous question:')
+                            q=aki.back()
+                        except CantGoBackAnyFurther:
+                            speak('There are no previous questions')
+                    else:
+                        speak('That is not a valid answer')
+            except Exception as e:
+                print(e)
+                speak("An error hs occurred")
+
+            aki.win()
+            speak('I have an answer for you')
+            print(aki.first_guess)
+            speak(f"It is {aki.first_guess['name']}.{aki.first_guess['description'] if aki.first_guess['description'] is not '---' else ''}!")
+            speak('Am I correct?')
+            query=takeCommand()
+            if 'yes' in query:
+                speak('Of course I am!')
+                speak('Thank you for playing with me.')
+            elif 'no' in query:
+                speak("Oops. I am sorry.")
