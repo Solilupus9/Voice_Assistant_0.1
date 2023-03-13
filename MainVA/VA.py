@@ -22,6 +22,7 @@ voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 
 
+
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
@@ -114,15 +115,16 @@ def main():
         elif 'email' in query:
             try:
                 speak("Please tell me what you wish to write.")
-                speak('Or would you prefer to type it?')
+                content=takeCommand()
+                speak('Do you want to type recipient email id?')
                 query = takeCommand()
-                if 'type' in query:
-                    content=input("Enter email:")
+                if 'yes' in query:
+                    to=input("Enter email id:")
                 else:
-                    content=takeCommand()
-                to = "esmail.s@somaiya.edu"
+                    speak('Please tell me the email id')
+                    to=takeCommand()
                 sendEmail(to, content)
-                speak("Email has been sent !")
+                speak("Email has been sent!")
             except Exception as e:
                 print(e)
                 speak("I am not able to send this email")
@@ -250,7 +252,7 @@ def main():
             aki.win()
             speak('I have an answer for you')
             print(aki.first_guess)
-            speak(f"It is {aki.first_guess['name']}.{aki.first_guess['description'] if aki.first_guess['description'] is not '---' else ''}!")
+            speak(f"It is {aki.first_guess['name']}.{aki.first_guess['description'] if aki.first_guess['description'] != '---' else ''}!")
             speak('Am I correct?')
             query=takeCommand()
             if 'yes' in query:
