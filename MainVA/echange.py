@@ -6,6 +6,7 @@ def changingname():
     f.write("\n")
     f.writelines(code16)
     f.close()
+    print("Entered data:")
 
 def dataread():
     file=open('datalog.txt')

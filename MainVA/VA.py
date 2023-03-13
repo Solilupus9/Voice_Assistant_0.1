@@ -1,7 +1,6 @@
 import subprocess
 import wolframalpha
 import pyttsx3
-import json
 import random
 import speech_recognition as sr
 import datetime
@@ -19,7 +18,7 @@ from akinator import *
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[2].id)
 
 
 
@@ -36,17 +35,16 @@ def wishMe():
         speak("Good Afternoon!")
     else:
         speak("Good Evening!")
-
     speak("I am your Voice Assistant")
     time.sleep(0.5)
 
-def takeCommand():
+def takeCommand(ltime=4):
     r = sr.Recognizer()
     with sr.Microphone() as source:
 
         print("Listening...")
         r.pause_threshold = 1
-        audio = r.listen(source,phrase_time_limit=4)
+        audio = r.listen(source,phrase_time_limit=ltime)
 
     try:
         print("Recognizing...")
@@ -64,7 +62,8 @@ def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    file = open('datalog.txt')
+    print(os.getcwd())
+    file = open('./MainVA/datalog.txt','r')
     addpass = file.readlines()
     server.login(addpass[0],addpass[1])
     server.sendmail(addpass[0], to, content)
@@ -118,11 +117,12 @@ def main():
                 content=takeCommand()
                 speak('Do you want to type recipient email id?')
                 query = takeCommand()
-                if 'yes' in query:
-                    to=input("Enter email id:")
-                else:
+                if 'no' in query:
                     speak('Please tell me the email id')
                     to=takeCommand()
+                else:
+                    speak('Please type the email id')
+                    to=input("Enter email id:")
                 sendEmail(to, content)
                 speak("Email has been sent!")
             except Exception as e:
@@ -186,16 +186,24 @@ def main():
 
         elif "don't listen" in query or "stop listening" in query:
             speak("For how long?")
-            a = int(takeCommand())
+            a = str(takeCommand())
             print(a)
-            time.sleep(a)
+            if 'second' in a:
+                a=a.replace(' seconds','')
+                a=a.replace(' second','')
+                time.sleep(int(a))
+            elif 'minute' in a:
+                a = a.replace(' minutes', '')
+                a = a.replace(' minute', '')
+                time.sleep(int(a)*60)
+            else:
+                speak("Invalid time")
+            speak('I am listening again')
 
         elif "where is" in query:
             query = query.replace("where is", "")
-            location = query
-            speak("User asked to Locate")
-            speak(location)
-            webbrowser.open("https://www.google.nl/maps/place/"+location)
+            speak("User asked to Locate"+query)
+            webbrowser.open("https://www.google.nl/maps/place/"+query)
 
         elif "write a note" in query:
             speak("What should i write, sir?")
