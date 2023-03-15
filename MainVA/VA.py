@@ -206,9 +206,11 @@ def main():
             webbrowser.open("https://www.google.nl/maps/place/"+query)
 
         elif "write a note" in query:
-            speak("What should i write, sir?")
+            speak("What should I name it?")
+            name=takeCommand()
+            speak("What should i write?")
             note = takeCommand()
-            file = open('note.txt', 'w')
+            file = open(name+'.txt', 'w')
             speak("Should i include date and time?")
             snfm = takeCommand()
             if 'yes' in snfm:
@@ -217,10 +219,16 @@ def main():
             file.write(note)
 
         elif "show note" in query:
-            speak("Showing Notes")
-            file = open("note.txt", "r")
-            print(file.read())
-            speak(file.read(6))
+            speak("Which note do you want me to show?")
+            name=takeCommand()
+            try:
+                speak(f"Opening {name}")
+                file = open(name+".txt", "r")
+                print(file.read())
+                speak(file.read(6))
+            except Exception as e:
+                print(e)
+                speak(f'{name} could not be opened')
 
         elif 'chess' in query:
             webbrowser.open('https://www.chess.com/play/computer')
@@ -268,3 +276,6 @@ def main():
                 speak('Thank you for playing with me.')
             elif 'no' in query:
                 speak("Oops. I am sorry.")
+
+        else:
+            speak("I did not understand that")
