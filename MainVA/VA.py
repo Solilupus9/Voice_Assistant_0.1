@@ -50,6 +50,12 @@ text = "Things you can do:\n\n  music\n  email\n  akinator\n  open youtube\n  wh
 label3 = tk.Label(root, bg="#4F98CA", fg="#F5EAEA", text=text, font=("Courier", 18, "bold"), justify="left")
 label3.place(x=100,y=310)
 
+to=tk.StringVar()
+
+def getemail(x:tk.Entry):
+    global to
+    to=x.get()
+
 def ct(show:str):
     label3.config(text=show)
 
@@ -91,7 +97,7 @@ def takeCommand(ltime=5):
 
 
 def sendEmail(to,sub, content):
-    file = open('./MainVA/datalog.txt','r')
+    file = open('./datalog.txt','r')
     addpass = file.readlines()
     yagmail.SMTP(addpass[0],addpass[1]).send(to,sub,content)
     file.close()
@@ -145,6 +151,7 @@ def main():
 
         elif 'email' in query:
             try:
+                global to
                 ct('What is the subject?')
                 speak('What is the subject?')
                 sub=takeCommand()
@@ -159,7 +166,13 @@ def main():
                     to=takeCommand()
                 else:
                     speak('Please type the email id')
-                    to=input("Enter email id:")
+                    x=tk.Entry(root,textvariable=to,width=30,font=("Courier", 18))
+                    x.place(x=100,y=350)
+                    a=tk.Button(root,text='Submit',command=lambda:getemail(x),height=2,width=10)
+                    a.place(x=280,y=400)
+                    time.sleep(15)
+                    a.destroy()
+                    x.destroy()
                 sendEmail(to,sub, content)
                 speak("Email has been sent!")
             except Exception as e:
@@ -195,7 +208,7 @@ def main():
             print("The answer is " + answer)
             speak("The answer is " + answer)
 
-        elif 'search' in query and 'on youtube' in query:
+        elif 'search' in query or 'play'in query and 'on youtube' in query:
             key=query.replace('search ','').replace(' on youtube','').replace(' ','+')
             html = urllib.request.urlopen("https://www.youtube.com/results?search_query="+key)
             video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
